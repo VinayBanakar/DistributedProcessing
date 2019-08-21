@@ -15,7 +15,8 @@ int main(){
 	int* Cal;
 
 	Cal = (int*) shmem_calloc(n,sizeof(int));
-	printf("CaL value: %d addr:%p\n",*Cal, Cal);
+	printf("PE #%d CaL value: %d addr:%p\n",me, *Cal, Cal);
+	
 	Str = (char*) shmem_malloc(n*sizeof(char));
 	if(Str == NULL){
 		printf("Failed to allocate remote memory\n");
@@ -49,6 +50,7 @@ int main(){
 		Str[n-5] = '\0';
 		printf("I am %d and Str value: %s addr: %p\n", me, Str, Str);
 	}
+	
 	shmem_free(Str);
 	shmem_finalize();
 }

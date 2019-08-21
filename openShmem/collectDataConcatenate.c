@@ -27,10 +27,16 @@ int main(){
 	
 	shmem_barrier_all();
 
-	shmem_collect32(dest, src, nprocs, 0, 0, nprocs, pSync);
+	//if(me == 1%nprocs){
+		shmem_collect32(dest, src, nprocs, 0, 0, nprocs, pSync);
+
+	//}
 
 	shmem_set_lock(&lock);
-	printf("PE #%d %d \n",me, dest[0]);
+	printf("PE #%d ====\n",me);
+	for(int i=0; i<nprocs*nprocs; ++i){
+		printf("\t%d\n", dest[i]);
+	}
 	shmem_clear_lock(&lock);
 
 	shmem_free(src);

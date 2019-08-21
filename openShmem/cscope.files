@@ -1,0 +1,9 @@
+./pointToPointSync.c
+./collectDataConcatenate.c
+./dynamicMem.c
+./fenceAndQuite.c
+./atomicAMO.c
+./startPEsTest.c
+./OpShApi.c
+./memPtrs.c
+./broadcastData.c

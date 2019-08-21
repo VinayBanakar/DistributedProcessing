@@ -11,7 +11,7 @@ int main(){
 
 	int me = shmem_my_pe();
 	int npes = shmem_n_pes();
-
+	
 	if(me==0) {
 		int* ptr = shmem_ptr(dest, npes-1);
 		if(ptr == NULL)
@@ -23,6 +23,7 @@ int main(){
 		shmem_info_get_version(&major, &minor);
 		shmem_info_get_name(name);
 		printf("%s and minor: major %d, %d\n",name, minor, major);
+		printf("%u\n", ptr);
 	}
 
 
