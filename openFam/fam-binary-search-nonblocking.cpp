@@ -24,17 +24,17 @@ void createRegionAndItem(uint64_t size, Fam_Region_Descriptor *region, Fam_Descr
                 cout << "PE 0 creating region: " << REGION_NAME << endl;
                 region = my_fam->fam_create_region(REGION_NAME, size, 0777, NONE);
                 cout << "Created region "<< REGION_NAME <<" size: " << my_fam->fam_size(region) << endl;
+              try {
+                        cout << "PE 0 creating data item 'keys'" << endl;
+                        // Array of size N_PER_PE * Total number of PEs
+                        item = my_fam->fam_allocate("keys", (N_PER_PE * numPEs * sizeof(int)), 0777, region);
+                        cout << "Created item 'keys' size: " << my_fam->fam_size(item) << endl;
+                } catch(Fam_Exception &e) {
+                        cout << "Fam allocation failed for 'keys': " << e.fam_error_msg() << endl;
+                }
         } catch(Fam_Exception &e) {
                 cout << "Fam region creation failed " << e.fam_error_msg() << endl;
                 //exit(1);
-        }
-        try {
-                cout << "PE 0 creating data item 'keys'" << endl;
-                // Array of size N_PER_PE * Total number of PEs
-                //item = my_fam->fam_allocate("keys", (N_PER_PE * numPEs * sizeof(int)), 0777, region);
-                //cout << "Created item 'keys' size: " << my_fam->fam_size(item) << endl;
-        } catch(Fam_Exception &e) {
-                cout << "Fam allocation failed for 'keys': " << e.fam_error_msg() << endl;
         }
 }
 
@@ -107,6 +107,7 @@ int main(){
 
         uint64_t pe_keys[N_PER_PE];
         uint64_t searchList[N_SEARCHES];
+        int succ = 0;
         // Lookup region and item
         try {
                 region = my_fam->fam_lookup_region(REGION_NAME);
@@ -140,6 +141,7 @@ int main(){
                                         if(check){
                                                 cout << "PE#" << myPE << "\t" << *(searchList+i);
                                                 cout << "\t" << "FOUND!" << endl;
+                                                succ++;
                                         } else {
                                                 cout << "PE#" << myPE << "FAILED!!!! ";
                                                 cout << *(searchList+i) << "Not found.";
@@ -151,4 +153,6 @@ int main(){
                 cout << "Error: " << e.fam_error_msg() << endl;
                 exit(1);
         }
+        my_fam->fam_barrier_all();
+        cout << "PE #" << myPE << " successfully searched " << succ << " numbers" << endl;
 }
