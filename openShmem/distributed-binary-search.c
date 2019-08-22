@@ -1,10 +1,11 @@
+#include <stdio.h>
 #include <shmem.h>
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
 
-#define N_PER_PE 10
-#define N_SEARCHES 5
+#define N_PER_PE 100
+#define N_SEARCHES 50
 
 /* N_PER_PE*N_PES sorted, distributed shared array */
 int keys[N_PER_PE];
@@ -20,7 +21,6 @@ static bool binary_search(int key) {
 
         mid = low + (high-low)/2;
         val = shmem_int_g(&keys[mid%N_PER_PE], mid/N_PER_PE);
-
         if(val == key) {
             return true;
         } else if(val < key) {
@@ -52,10 +52,14 @@ int main(int argc, char **argv) {
 
     
     shmem_barrier_all();
-
+	
+//    for(i=0; i< N_PER_PE; ++i){
+//	printf("From PE#%d keys[%d]: %d\n",shmem_my_pe(), i, keys[i]);
+//    }
+    
     populateSearchValues(0, N_PER_PE * shmem_n_pes(), searchList);
 
-    for(int i = 0; i < N_SEARCHES; ++i)
+//    for(int i = 0; i < N_SEARCHES; ++i)
 //	    printf("PE #%d \t i:%d \t %d\n",shmem_my_pe(),i,*(searchList+i));
 
 
